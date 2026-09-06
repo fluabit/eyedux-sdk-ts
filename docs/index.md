@@ -2,7 +2,7 @@
 
 <img src="assets/eyedux-logo-color.png" alt="Eyedux" class="eyedux-hero__logo">
 
-<div class="eyedux-hero__eyebrow">SDK oficial · TypeScript · Node.js 18+</div>
+<div class="eyedux-hero__eyebrow">SDK oficial · TypeScript · qualquer runtime com fetch</div>
 
 # Eyedux SDK para TypeScript
 
@@ -32,8 +32,13 @@
 
     [Consultar a referência](api-reference.md)
 
-- :material-shield-check-outline: **Pronto para backend**
 
-    Mantenha segredos no servidor, trate falhas explicitamente e controle as tentativas de retry.
+- :material-monitor-cellphone: **React e React Native**
+
+    Use o mesmo cliente em browser, React Native, workers ou backend.
 
 </div>
+
+!!! warning "Uso de API key no cliente"
+
+    O SDK permite usar a API key diretamente em aplicações web, React e React Native. Essa escolha torna a key acessível a usuários da aplicação e não é recomendada para chaves privilegiadas. Em cenários sensíveis, envie eventos por um backend controlado pela aplicação.

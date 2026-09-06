@@ -9,8 +9,10 @@ dependências de runtime.
 - Node.js 18 ou superior; ou
 - um runtime web com `fetch`, `AbortController` e `URLSearchParams`.
 
-Em aplicações web, não exponha uma API key privilegiada no bundle do browser.
-Prefira enviar eventos por um backend controlado pela aplicação.
+O SDK pode ser usado diretamente em browsers, React e React Native. Nesses
+ambientes, a API key ficará acessível a quem usar a aplicação. Para chaves
+privilegiadas, a prática recomendada é enviar os eventos por um backend
+controlado pela aplicação.
 
 ## Instalação
 

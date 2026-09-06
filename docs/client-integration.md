@@ -1,6 +1,6 @@
 # Guia de integração para TypeScript
 
-Este guia explica como integrar o Eyedux a aplicações TypeScript ou JavaScript. O SDK usa `fetch` nativo, não depende de framework e funciona em Node.js 18+ ou em runtimes web compatíveis.
+Este guia explica como integrar o Eyedux a aplicações TypeScript ou JavaScript. O SDK usa `fetch` nativo, não depende de framework e funciona em Node.js 18+, browsers, React, React Native ou outros runtimes compatíveis.
 
 ## Antes de começar
 
@@ -10,7 +10,9 @@ Você precisa de:
 - uma API key criada no painel do Eyedux;
 - o `project_id` do projeto que receberá os eventos.
 
-A API key autentica a organização e deve ficar no backend ou em um secret manager. O SDK usa a base fixa `https://api.eyedux.com` e envia `Authorization: Bearer <api_key>` automaticamente.
+O SDK permite informar a API key diretamente no browser, React ou React Native. Essa abordagem não é bloqueada, mas torna a key acessível no cliente e não é recomendada para credenciais privilegiadas. Para cenários sensíveis, mantenha a key no backend ou em um secret manager e envie eventos por um endpoint controlado pela aplicação.
+
+O SDK usa a base fixa `https://api.eyedux.com` e envia `Authorization: Bearer <api_key>` automaticamente.
 
 ## Instalação
 
@@ -50,6 +52,20 @@ export const eyedux = createEyeduxClientWithConfig({
 Esse construtor valida a API key e o projeto. Para ler somente a API key de `EYEDUX_API_KEY`, use `createEyeduxClientFromEnv`; o projeto ainda deve ser informado nas opções ou em cada evento.
 
 Crie uma instância por configuração e reutilize-a durante a vida da aplicação.
+
+### Uso direto em React ou React Native
+
+Não é necessário um pacote adicional para React ou React Native. Crie o cliente uma vez fora dos componentes, ou em uma camada de serviços da aplicação, e importe a instância onde ela for necessária:
+
+```ts
+import { createEyeduxClient } from "@eyedux/sdk";
+
+export const eyedux = createEyeduxClient("sua-api-key", {
+  projectId: "64f1a2b3c4d5e6f7a8b9c0d1",
+});
+```
+
+Esse uso é suportado. Avalie, porém, o impacto de uma API key exposta no bundle web ou no aplicativo distribuído antes de adotá-lo em produção.
 
 ## Enviando o primeiro evento
 
@@ -224,7 +240,8 @@ Também estão disponíveis `isAuthError`, `isConflict` e `isExternalObjectConfl
 
 ## Checklist de produção
 
-- [ ] API key armazenada em secret manager ou variável de ambiente.
+- [ ] Uso direto de API key no cliente avaliado quanto à exposição da credencial.
+- [ ] Para chaves privilegiadas, API key armazenada em secret manager ou variável de ambiente no backend.
 - [ ] Projeto configurado explicitamente.
 - [ ] Uma instância do SDK reutilizada pela aplicação.
 - [ ] Timeout e cancelamento adequados ao handler ou worker.
@@ -242,7 +259,7 @@ Este repositório publica a documentação com GitHub Pages e GitHub Actions. Pa
 3. Em **Build and deployment > Source**, selecione **GitHub Actions**.
 4. Faça push para `main` ou execute o workflow **Build and deploy documentation to GitHub Pages** manualmente.
 
-O Pages hospeda apenas a documentação estática. Ele não executa o SDK e não é um local seguro para expor API keys.
+O Pages hospeda apenas a documentação estática. Ele não executa o SDK e não deve receber API keys reais.
 
 ## Próximo documento
 

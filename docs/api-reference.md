@@ -10,7 +10,7 @@ O SDK usa a base fixa `https://api.eyedux.com` e injeta o header abaixo em toda 
 Authorization: Bearer <api_key>
 ```
 
-O backend infere a organização pela API key. Não envie `organization_id` no payload.
+O backend infere a organização pela API key. Não envie `organization_id` no payload. O cliente funciona em browsers, React e React Native, portanto o SDK não impede o uso direto da key nesses ambientes. Como ela pode ser extraída do bundle ou aplicativo, prefira um backend para chaves privilegiadas.
 
 ## Construtores
 
