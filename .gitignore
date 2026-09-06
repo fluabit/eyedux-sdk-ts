@@ -1,9 +1,11 @@
 # Dependencies
 node_modules/
+.venv/
 
 # Build and test output
 dist/
 coverage/
+site/
 *.tsbuildinfo
 
 # npm packaging output
