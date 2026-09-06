@@ -1,0 +1,54 @@
+{
+  "name": "@eyedux/sdk",
+  "version": "0.1.0",
+  "description": "Official framework-agnostic TypeScript SDK for Eyedux",
+  "license": "UNLICENSED",
+  "keywords": [
+    "eyedux",
+    "events",
+    "observability",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fluabit/eyedux-sdk-ts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fluabit/eyedux-sdk-ts/issues"
+  },
+  "homepage": "https://github.com/fluabit/eyedux-sdk-ts#readme",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "check": "npm run typecheck && npm test && npm run build",
+    "prepublishOnly": "npm run check"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.4",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}
