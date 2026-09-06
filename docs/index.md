@@ -37,7 +37,3 @@
     Mantenha segredos no servidor, trate falhas explicitamente e controle as tentativas de retry.
 
 </div>
-
-!!! warning "API key"
-
-    Use o SDK no backend. Nunca exponha uma API key privilegiada em JavaScript do navegador, aplicações mobile ou repositórios.
