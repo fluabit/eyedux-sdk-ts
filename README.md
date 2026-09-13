@@ -139,15 +139,20 @@ const event = await eyedux.findEventByExternalId("order_123");
 - `SystemLog` (`system-log`)
 - `SystemDebug` (`system-debug`)
 - `SystemInfo` (`system-info`)
-- `SystemMetric` (`system-metric`)
+- `Audit` (`audit`)
 
-Os atalhos `emitWarning`, `emitLog`, `emitDebug`, `emitInfo` e `emitMetric`
+Os atalhos `emitWarning`, `emitLog`, `emitDebug`, `emitInfo` e `emitAudit`
 preenchem a categoria automaticamente:
 
 ```ts
-await eyedux.emitMetric({
-  type: "queue.depth",
-  properties: { queue: "emails", count: 42 },
+await eyedux.emitAudit({
+  type: "user.password_changed",
+  properties: {
+    actor: { type: "user", id: "user_123" },
+    target: { type: "user", id: "user_123" },
+    result: "success",
+    changes: { fields: ["password"] },
+  },
 });
 ```
 

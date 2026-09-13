@@ -4,7 +4,7 @@ export const EventEyeduxType = {
   SystemLog: "system-log",
   SystemDebug: "system-debug",
   SystemInfo: "system-info",
-  SystemMetric: "system-metric",
+  Audit: "audit",
 } as const;
 
 export type EventEyeduxType =
@@ -22,6 +22,7 @@ export interface EyeduxEvent {
   id: string;
   environment: string;
   eyeduxType: EventEyeduxType | null;
+  clientStatus: "to_check" | "solved" | "declined" | null;
   type: string;
   typeGroup: string;
   properties: JsonObject;

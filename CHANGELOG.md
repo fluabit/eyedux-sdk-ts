@@ -5,6 +5,17 @@ Todas as alterações relevantes deste projeto serão documentadas neste arquivo
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.2.0] - 2026-09-13
+
+### Adicionado
+
+- Suporte à categoria de evento `audit` e ao atalho `emitAudit`.
+- Mapeamento de `client_status` para `clientStatus` nas respostas de eventos.
+
+### Removido
+
+- Categoria de evento `system-metric` e o método `emitMetric`.
+
 ## [0.1.0] - 2026-09-06
 
 ### Adicionado

@@ -18,6 +18,7 @@ const apiEvent = {
   id: "abc123",
   environment: "production",
   eyedux_type: "system-log",
+  client_status: null,
   type: "user.signup",
   type_group: "identity",
   properties: { plan: "pro" },
@@ -98,6 +99,7 @@ describe("EyeduxClient", () => {
       id: "abc123",
       environment: "production",
       eyeduxType: "system-log",
+      clientStatus: null,
       type: "user.signup",
       typeGroup: "identity",
       properties: { plan: "pro" },
@@ -131,6 +133,20 @@ describe("EyeduxClient", () => {
       type: "api.request",
       properties: { method: "GET" },
     });
+  });
+
+  it("maps the client status returned by the API", async () => {
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
+      jsonResponse({ data: { id: "event-1", client_status: "to_check" } }, 201),
+    );
+    const client = new EyeduxClient("key", {
+      projectId: "project",
+      fetch: fetchMock,
+    });
+
+    await expect(
+      client.createEvent({ type: "api.error", properties: { ok: false } }),
+    ).resolves.toMatchObject({ clientStatus: "to_check" });
   });
 
   it("rejects event creation without a project before making a request", async () => {
@@ -253,7 +269,7 @@ describe("EyeduxClient", () => {
     ["emitLog", EventEyeduxType.SystemLog],
     ["emitDebug", EventEyeduxType.SystemDebug],
     ["emitInfo", EventEyeduxType.SystemInfo],
-    ["emitMetric", EventEyeduxType.SystemMetric],
+    ["emitAudit", EventEyeduxType.Audit],
   ] as const)("%s uses %s", async (method, expectedType) => {
     const fetchMock = vi
       .fn<typeof fetch>()

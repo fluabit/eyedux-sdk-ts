@@ -109,7 +109,7 @@ client.emitWarning(input, options);
 client.emitLog(input, options);
 client.emitDebug(input, options);
 client.emitInfo(input, options);
-client.emitMetric(input, options);
+client.emitAudit(input, options);
 ```
 
 `emit` usa `input.eyeduxType`. Os atalhos aplicam suas categorias correspondentes. `emitError` adiciona contexto de diagnóstico às propriedades, copiando o objeto de entrada.
@@ -125,7 +125,7 @@ const EventEyeduxType = {
   SystemLog: "system-log",
   SystemDebug: "system-debug",
   SystemInfo: "system-info",
-  SystemMetric: "system-metric",
+  Audit: "audit",
 } as const;
 ```
 
@@ -146,6 +146,7 @@ interface EyeduxEvent {
   id: string;
   environment: string;
   eyeduxType: EventEyeduxType | null;
+  clientStatus: "to_check" | "solved" | "declined" | null;
   type: string;
   typeGroup: string;
   properties: Record<string, unknown>;

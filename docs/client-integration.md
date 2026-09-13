@@ -124,7 +124,7 @@ await eyedux.emitWarning({
 });
 ```
 
-Também estão disponíveis `emitLog`, `emitDebug`, `emitInfo` e `emitMetric`.
+Também estão disponíveis `emitLog`, `emitDebug`, `emitInfo` e `emitAudit`.
 
 ## Timeout e cancelamento
 

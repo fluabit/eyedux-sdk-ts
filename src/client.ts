@@ -23,6 +23,7 @@ interface APIEvent {
   id: string;
   environment?: string;
   eyedux_type?: EventEyeduxType | null;
+  client_status?: "to_check" | "solved" | "declined" | null;
   type?: string;
   type_group?: string;
   properties?: JsonObject;
@@ -175,8 +176,8 @@ export class EyeduxClient {
     return this.#emitAs(EventEyeduxType.SystemInfo, input, options);
   }
 
-  emitMetric(input: EmitInput, options?: RequestOptions): Promise<EyeduxEvent> {
-    return this.#emitAs(EventEyeduxType.SystemMetric, input, options);
+  emitAudit(input: EmitInput, options?: RequestOptions): Promise<EyeduxEvent> {
+    return this.#emitAs(EventEyeduxType.Audit, input, options);
   }
 
   #emitAs(
@@ -262,6 +263,7 @@ function mapEvent(event: APIEvent): EyeduxEvent {
     id: event.id,
     environment: event.environment ?? "",
     eyeduxType: event.eyedux_type ?? null,
+    clientStatus: event.client_status ?? null,
     type: event.type ?? "",
     typeGroup: event.type_group ?? "",
     properties: event.properties ?? {},
