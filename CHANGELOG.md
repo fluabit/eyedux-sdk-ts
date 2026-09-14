@@ -5,6 +5,14 @@ Todas as alterações relevantes deste projeto serão documentadas neste arquivo
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.3.0] - 2026-09-13
+
+### Alterado
+
+- Eventos `audit` agora exigem `source` não vazio em `actor` e `target`.
+- Validação local de `actor`, `target`, `result` e `reason` em eventos `audit`.
+- Tipos públicos adicionados para propriedades de auditoria.
+
 ## [0.2.0] - 2026-09-13
 
 ### Adicionado

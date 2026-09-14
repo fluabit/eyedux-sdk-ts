@@ -14,7 +14,8 @@ export type APIErrorCode = (typeof APIErrorCode)[keyof typeof APIErrorCode];
 export type ValidationErrorCode =
   | "EMPTY_API_KEY"
   | "EMPTY_PROJECT_ID"
-  | "EMPTY_EXTERNAL_ID";
+  | "EMPTY_EXTERNAL_ID"
+  | "INVALID_AUDIT_PROPERTIES";
 
 export class EyeduxValidationError extends Error {
   override readonly name = "EyeduxValidationError";

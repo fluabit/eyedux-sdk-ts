@@ -126,6 +126,12 @@ await eyedux.emitWarning({
 
 Também estão disponíveis `emitLog`, `emitDebug`, `emitInfo` e `emitAudit`.
 
+Em eventos `audit`, `properties.actor` e `properties.target` são obrigatórios.
+Ambos precisam de `type` e `source` não vazios; `actor.id` é obrigatório salvo
+quando `actor.type` é `anonymous`, enquanto `target.id` é sempre obrigatório.
+`result` deve ser `success`, `failure`, `in_review` ou `denied`, e `reason` é
+obrigatório para `failure` e `denied`.
+
 ## Timeout e cancelamento
 
 O timeout padrão é 30 segundos e pode ser alterado em `timeoutMs`. Cada método assíncrono também aceita `AbortSignal`:

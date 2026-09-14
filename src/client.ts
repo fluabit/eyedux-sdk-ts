@@ -6,6 +6,7 @@ import {
 } from "./errors.js";
 import {
   EventEyeduxType,
+  type AuditEmitInput,
   type CreateEventInput,
   type EmitInput,
   type EyeduxClientConfig,
@@ -73,6 +74,9 @@ export class EyeduxClient {
     input: CreateEventInput,
     options: RequestOptions = {},
   ): Promise<EyeduxEvent> {
+    if (input.eyeduxType === EventEyeduxType.Audit) {
+      validateAuditProperties(input.properties);
+    }
     const projectId = input.projectId?.trim() || this.#projectId;
     if (!projectId) {
       throw new EyeduxValidationError(
@@ -176,7 +180,10 @@ export class EyeduxClient {
     return this.#emitAs(EventEyeduxType.SystemInfo, input, options);
   }
 
-  emitAudit(input: EmitInput, options?: RequestOptions): Promise<EyeduxEvent> {
+  emitAudit(
+    input: AuditEmitInput,
+    options?: RequestOptions,
+  ): Promise<EyeduxEvent> {
     return this.#emitAs(EventEyeduxType.Audit, input, options);
   }
 
@@ -274,6 +281,69 @@ function mapEvent(event: APIEvent): EyeduxEvent {
     correlationObject: event.correlation_object ?? null,
     metadata: event.metadata ?? null,
   };
+}
+
+function validateAuditProperties(properties: JsonObject): void {
+  const actor = asObject(properties.actor);
+  const target = asObject(properties.target);
+  const result = properties.result;
+
+  if (
+    !actor ||
+    !nonEmptyString(actor.type) ||
+    !nonEmptyString(actor.source) ||
+    (actor.type !== "anonymous" && !nonEmptyString(actor.id)) ||
+    (actor.id !== undefined && !nonEmptyString(actor.id))
+  ) {
+    throw new EyeduxValidationError(
+      "INVALID_AUDIT_PROPERTIES",
+      "eyedux: audit actor must have a non-empty type and source, and an id unless anonymous",
+    );
+  }
+
+  if (
+    !target ||
+    !nonEmptyString(target.type) ||
+    !nonEmptyString(target.id) ||
+    !nonEmptyString(target.source)
+  ) {
+    throw new EyeduxValidationError(
+      "INVALID_AUDIT_PROPERTIES",
+      "eyedux: audit target must have non-empty type, id, and source",
+    );
+  }
+
+  if (
+    result !== "success" &&
+    result !== "failure" &&
+    result !== "in_review" &&
+    result !== "denied"
+  ) {
+    throw new EyeduxValidationError(
+      "INVALID_AUDIT_PROPERTIES",
+      "eyedux: audit result must be success, failure, in_review, or denied",
+    );
+  }
+
+  if (
+    (result === "failure" || result === "denied") &&
+    !nonEmptyString(properties.reason)
+  ) {
+    throw new EyeduxValidationError(
+      "INVALID_AUDIT_PROPERTIES",
+      "eyedux: audit reason is required for failure and denied results",
+    );
+  }
+}
+
+function asObject(value: unknown): Record<string, unknown> | undefined {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : undefined;
+}
+
+function nonEmptyString(value: unknown): value is string {
+  return typeof value === "string" && value.trim().length > 0;
 }
 
 function parseAPIError(response: Response, raw: string): EyeduxAPIError {

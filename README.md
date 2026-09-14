@@ -148,8 +148,8 @@ preenchem a categoria automaticamente:
 await eyedux.emitAudit({
   type: "user.password_changed",
   properties: {
-    actor: { type: "user", id: "user_123" },
-    target: { type: "user", id: "user_123" },
+    actor: { type: "user", id: "user_123", source: "identity" },
+    target: { type: "user", id: "user_123", source: "identity" },
     result: "success",
     changes: { fields: ["password"] },
   },

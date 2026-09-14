@@ -269,7 +269,6 @@ describe("EyeduxClient", () => {
     ["emitLog", EventEyeduxType.SystemLog],
     ["emitDebug", EventEyeduxType.SystemDebug],
     ["emitInfo", EventEyeduxType.SystemInfo],
-    ["emitAudit", EventEyeduxType.Audit],
   ] as const)("%s uses %s", async (method, expectedType) => {
     const fetchMock = vi
       .fn<typeof fetch>()
@@ -283,6 +282,71 @@ describe("EyeduxClient", () => {
 
     const body = JSON.parse(String(fetchMock.mock.calls[0]![1]?.body));
     expect(body.eyedux_type).toBe(expectedType);
+  });
+
+  it("sends audit actors and targets with their sources", async () => {
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(jsonResponse({ data: { id: "event-1" } }, 201));
+    const client = new EyeduxClient("key", {
+      projectId: "project",
+      fetch: fetchMock,
+    });
+
+    await client.emitAudit({
+      type: "user.password_changed",
+      properties: {
+        actor: { type: "user", id: "user-1", source: "identity" },
+        target: { type: "user", id: "user-1", source: "identity" },
+        result: "success",
+        changes: { fields: ["password"] },
+      },
+    });
+
+    const body = JSON.parse(String(fetchMock.mock.calls[0]![1]?.body));
+    expect(body.properties.actor.source).toBe("identity");
+    expect(body.properties.target.source).toBe("identity");
+  });
+
+  it("rejects an audit actor without a source before making a request", async () => {
+    const fetchMock = vi.fn<typeof fetch>();
+    const client = new EyeduxClient("key", {
+      projectId: "project",
+      fetch: fetchMock,
+    });
+
+    await expect(
+      client.emitAudit({
+        type: "user.password_changed",
+        properties: {
+          actor: { type: "user", id: "user-1", source: " " },
+          target: { type: "user", id: "user-1", source: "identity" },
+          result: "success",
+        },
+      }),
+    ).rejects.toMatchObject({ code: "INVALID_AUDIT_PROPERTIES" });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("allows an anonymous audit actor without an id", async () => {
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(jsonResponse({ data: { id: "event-1" } }, 201));
+    const client = new EyeduxClient("key", {
+      projectId: "project",
+      fetch: fetchMock,
+    });
+
+    await expect(
+      client.emitAudit({
+        type: "user.login",
+        properties: {
+          actor: { type: "anonymous", source: "web" },
+          target: { type: "user", id: "user-1", source: "identity" },
+          result: "in_review",
+        },
+      }),
+    ).resolves.toMatchObject({ id: "event-1" });
   });
 });
 

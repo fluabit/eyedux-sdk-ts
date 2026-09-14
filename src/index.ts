@@ -27,6 +27,11 @@ export type {
 } from "./errors.js";
 export type { ErrorSource } from "./diagnostics.js";
 export type {
+  AuditActor,
+  AuditEmitInput,
+  AuditProperties,
+  AuditResult,
+  AuditTarget,
   CreateEventInput,
   EmitInput,
   EventEyeduxType as EventEyeduxTypeValue,

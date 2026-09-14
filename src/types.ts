@@ -12,6 +12,28 @@ export type EventEyeduxType =
 
 export type JsonObject = Record<string, unknown>;
 
+export type AuditResult = "success" | "failure" | "in_review" | "denied";
+
+export interface AuditActor {
+  type: string;
+  id?: string;
+  source: string;
+}
+
+export interface AuditTarget {
+  type: string;
+  id: string;
+  source: string;
+}
+
+export interface AuditProperties extends JsonObject {
+  actor: AuditActor;
+  target: AuditTarget;
+  result: AuditResult;
+  reason?: string;
+  changes?: JsonObject;
+}
+
 export interface EventObject {
   id: string;
   property: string;
@@ -55,6 +77,10 @@ export interface EmitInput extends CreateEventInput {
   operation?: string;
   sourceSkip?: number;
 }
+
+export type AuditEmitInput = Omit<EmitInput, "eyeduxType" | "properties"> & {
+  properties: AuditProperties;
+};
 
 export interface RequestOptions {
   signal?: AbortSignal;

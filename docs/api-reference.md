@@ -78,6 +78,13 @@ Envia `POST /public/logs`. `input.projectId` tem precedência sobre o projeto pa
 
 O SDK serializa os campos para `snake_case` na API: `project_id`, `type_group`, `eyedux_type`, `external_object` e `correlation_object`.
 
+Para eventos `audit`, use `AuditProperties` em `properties`. `actor` e `target`
+são objetos obrigatórios. `actor.type`, `actor.source`, `target.type`,
+`target.id` e `target.source` devem ser strings não vazias; `actor.id` é
+obrigatório, exceto para `actor.type = "anonymous"`. `result` aceita `success`,
+`failure`, `in_review` ou `denied`, e `reason` é obrigatório para `failure` e
+`denied`. `changes` é aceito para descrever alterações de estado.
+
 ### `listEvents`
 
 ```ts
@@ -136,6 +143,28 @@ interface EventObject {
   id: string;
   property: string;
   source?: string;
+}
+```
+
+```ts
+interface AuditActor {
+  type: string;
+  id?: string;
+  source: string;
+}
+
+interface AuditTarget {
+  type: string;
+  id: string;
+  source: string;
+}
+
+interface AuditProperties {
+  actor: AuditActor;
+  target: AuditTarget;
+  result: "success" | "failure" | "in_review" | "denied";
+  reason?: string;
+  changes?: Record<string, unknown>;
 }
 ```
 
@@ -201,6 +230,7 @@ Erros locais de validação, com a propriedade `code`:
 | `EMPTY_API_KEY` | API key vazia |
 | `EMPTY_PROJECT_ID` | Nenhum projeto disponível para criar o evento |
 | `EMPTY_EXTERNAL_ID` | ID externo vazio |
+| `INVALID_AUDIT_PROPERTIES` | Propriedades de auditoria ausentes ou inválidas |
 
 ### `EyeduxAPIError`
 
